@@ -23,7 +23,14 @@ export default async function testRoutes(server: FastifyInstance) {
       }
     }
   );
-
+  server.get("/test", async (request, reply) => {
+    try {
+      const tests = await prisma.test.findMany();
+      reply.send({ data: tests });
+    } catch (error) {
+      reply.status(500).send({ error: "Internal Server Error" });
+    }
+  });
   server.get<{ Params: IByIdParam }>("/test/:id", async (request, reply) => {
     try {
       const { id } = request.params;
@@ -44,11 +51,11 @@ export default async function testRoutes(server: FastifyInstance) {
     async (request, reply) => {
       try {
         const { id } = request.params;
-        console.log("idd", id);
+        // console.log("idd", id);
         const test = await prisma.test.delete({
           where: { id: Number(id) },
         });
-        console.log(test);
+        // console.log(test);
         reply.send({ data: test });
       } catch (error) {
         reply.status(500).send({ error: "Internal Server Error" });

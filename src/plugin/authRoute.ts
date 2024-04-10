@@ -46,7 +46,7 @@ export default async function AuthRoutes(server: FastifyInstance) {
       password: password,
       role: "user",
     };
-    console.log(payload);
+    // console.log(payload);
     const token = server.jwt.sign({ payload });
     reply.send({ token, data: user });
   });
@@ -67,7 +67,7 @@ export default async function AuthRoutes(server: FastifyInstance) {
       password: password,
       role: "admin",
     };
-    console.log(payload);
+    // console.log(payload);
     const token = server.jwt.sign({ payload });
     reply.send({ token, data: admin });
   });

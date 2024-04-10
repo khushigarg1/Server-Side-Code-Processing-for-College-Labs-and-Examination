@@ -3,14 +3,21 @@ import { PrismaClient } from "@prisma/client";
 import testRoutes from "./plugin/testroute";
 import aauthMiddleware from "./middleware/auth";
 import AuthRoutes from "./plugin/authRoute";
+import questionRoutes from "./plugin/questionRoute";
+import testcaseRoutes from "./plugin/testcaseroute";
+// import multipart from "@fastify/multipart";
 
 const server = fastify({ logger: true });
 const prisma = new PrismaClient();
 
 // server.register(aauthMiddleware);
 aauthMiddleware(server);
-server.register(testRoutes);
+
+// server.register(multipart);
 server.register(AuthRoutes);
+server.register(testRoutes);
+server.register(questionRoutes);
+server.register(testcaseRoutes);
 
 server.get("/", function (request, reply) {
   reply.send({ hello: "world" });
