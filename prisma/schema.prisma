@@ -20,6 +20,7 @@ model Test {
   User          User[]
   Question      Question[]
   Scoreboard    Scoreboard[]
+  createdAt     DateTime     @default(now())
 }
 
 model User {
@@ -30,15 +31,16 @@ model User {
   customValues Json?
   test         Test?        @relation(fields: [testId], references: [id])
   testId       Int?
-  CodeFile     CodeFile[]
   Scoreboard   Scoreboard[]
   @@unique([email, testId], name: "UniqueEmailTestId")
+  createdAt     DateTime     @default(now())
 }
 
 model Admin {
   id       Int    @id @default(autoincrement())
   email    String @unique
   password String
+  createdAt     DateTime     @default(now())
 }
 
 model Question {
@@ -48,6 +50,7 @@ model Question {
   statement  String
   TestCase   TestCase[]
   Scoreboard Scoreboard[]
+  createdAt     DateTime     @default(now())
 }
 
 model TestCase {
@@ -58,18 +61,9 @@ model TestCase {
   output        String
   hidden        Boolean         @default(true)
   SubmissionRun SubmissionRun[]
+  createdAt     DateTime     @default(now())
 }
 
-model CodeFile {
-  file_id       Int             @id @default(autoincrement())
-  user_id       Int
-  user          User            @relation(fields: [user_id], references: [id])
-  file_name     String
-  file_content  String
-  created_at    DateTime        @default(now())
-  Scoreboard    Scoreboard[]
-  SubmissionRun SubmissionRun[]
-}
 
 model Scoreboard {
   id                   Int             @id @default(autoincrement())
@@ -79,12 +73,11 @@ model Scoreboard {
   question_language    String
   total_num_testcases  Int
   num_testcases_passed Int
-  CodeFile_id          Int
-  codefile             CodeFile?       @relation(fields: [CodeFile_id], references: [file_id])
   user                 User            @relation(fields: [user_id], references: [id])
   test                 Test            @relation(fields: [test_id], references: [id])
   question             Question        @relation(fields: [question_id], references: [id])
   SubmissionRun        SubmissionRun[]
+  createdAt     DateTime     @default(now())
 }
 
 model SubmissionRun {
@@ -93,10 +86,9 @@ model SubmissionRun {
   status        String
   error         String?
   scoreboard_id Int
-  CodeFile_id   Int
-  codefile      CodeFile?  @relation(fields: [CodeFile_id], references: [file_id])
   testcase      TestCase   @relation(fields: [testcase_id], references: [id])
   scoreboard    Scoreboard @relation(fields: [scoreboard_id], references: [id])
+  createdAt     DateTime     @default(now())
 }
 
 model Configuration {
@@ -104,6 +96,7 @@ model Configuration {
   cpu_time_limit  Float
   wall_time_limit Float
   memory_limit    Float
+  createdAt     DateTime     @default(now())
 }
 
 // This is your Prisma schema file,

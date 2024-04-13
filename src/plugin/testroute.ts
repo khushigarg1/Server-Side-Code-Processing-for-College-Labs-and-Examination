@@ -31,6 +31,7 @@ export default async function testRoutes(server: FastifyInstance) {
       reply.status(500).send({ error: "Internal Server Error" });
     }
   });
+
   server.get<{ Params: IByIdParam }>("/test/:id", async (request, reply) => {
     try {
       const { id } = request.params;

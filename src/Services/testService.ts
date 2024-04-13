@@ -18,9 +18,21 @@ export async function createTest(testData) {
 }
 
 export async function getTestById(id) {
+  console.log(id);
   const test = await prisma.test.findUnique({
     where: { id: Number(id) },
+    include: {
+      User: true,
+      Question: {
+        include: {
+          TestCase: true,
+          Scoreboard: true,
+        },
+      },
+      Scoreboard: true,
+    },
   });
+  console.log(test);
   return test;
 }
 

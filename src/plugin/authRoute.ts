@@ -30,26 +30,32 @@ export default async function AuthRoutes(server: FastifyInstance) {
     reply.send({ token });
   });
 
-  //get user details
   server.post<{ Body: LoginUser }>("/user/login", async (req, reply) => {
     const { email, password, testId } = req.body;
     const user = await prisma.user.findUnique({
-      where: { email: email, testId: testId },
+      where: { UniqueEmailTestId: { email, testId } },
     });
-    const isMatch = user && (await bcrypt.compare(password, user.password));
-    if (!user || !isMatch) {
+
+    if (!user) {
       return reply.code(401).send({
-        message: "Invalid email or password",
+        message: "User not found",
       });
     }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return reply.code(401).send({
+        message: "Invalid password",
+      });
+    }
+
     const payload = {
       id: user.id,
       email: user.email,
-      password: password,
       role: "user",
-      testid: user?.testId,
+      testid: user.testId,
     };
-    // console.log(payload);
+
     const token = server.jwt.sign({ payload });
     reply.send({ token, data: user });
   });

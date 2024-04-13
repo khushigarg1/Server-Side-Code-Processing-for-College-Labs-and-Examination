@@ -103,7 +103,7 @@ export default async function testcaseRoutes(server: FastifyInstance) {
   );
   server.get(
     "/testcase/hidden",
-    // { onRequest: [server.authenticateAdmin] },
+    { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const testCases = await prisma.testCase.findMany({
