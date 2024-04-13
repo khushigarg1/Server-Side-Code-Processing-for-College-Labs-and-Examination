@@ -55,6 +55,7 @@ model TestCase {
   question      Question        @relation(fields: [question_id], references: [id])
   input         String
   output        String
+  hidden        Boolean         @default(true)
   SubmissionRun SubmissionRun[]
 }
 
