@@ -42,7 +42,7 @@ export default async function testcaseRoutes(server: FastifyInstance) {
 
   server.get<{ Params: { questionId: number } }>(
     "/testcases/:question_id",
-    { onRequest: [server.authenticateAdmin] },
+    // { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const questionId = parseInt(request.params.question_id);
@@ -61,7 +61,7 @@ export default async function testcaseRoutes(server: FastifyInstance) {
 
   server.get<{ Params: { id: number } }>(
     "/testcase/:id",
-    { onRequest: [server.authenticateAdmin] },
+    // { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const testCaseId = parseInt(request.params.id);
