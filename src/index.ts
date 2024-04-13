@@ -5,6 +5,7 @@ import aauthMiddleware from "./middleware/auth";
 import AuthRoutes from "./plugin/authRoute";
 import questionRoutes from "./plugin/questionRoute";
 import testcaseRoutes from "./plugin/testcaseroute";
+import submissionRoute from "./plugin/submissionRoute";
 // import multipart from "@fastify/multipart";
 
 const server = fastify({ logger: true });
@@ -18,6 +19,7 @@ server.register(AuthRoutes);
 server.register(testRoutes);
 server.register(questionRoutes);
 server.register(testcaseRoutes);
+server.register(submissionRoute);
 
 server.get("/", function (request, reply) {
   reply.send({ hello: "world" });

@@ -25,13 +25,14 @@ model Test {
 model User {
   id           Int          @id @default(autoincrement())
   name         String?
-  email        String       @unique
+  email        String 
   password     String
   customValues Json?
   test         Test?        @relation(fields: [testId], references: [id])
   testId       Int?
   CodeFile     CodeFile[]
   Scoreboard   Scoreboard[]
+  @@unique([email, testId], name: "UniqueEmailTestId")
 }
 
 model Admin {

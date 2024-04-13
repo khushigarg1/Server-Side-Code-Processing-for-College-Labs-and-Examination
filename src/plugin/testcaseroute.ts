@@ -11,14 +11,18 @@ const prisma = new PrismaClient();
 
 export default async function testcaseRoutes(server: FastifyInstance) {
   server.post<{
-    Body: { questionId: number; input: string; output: string };
+    Body: {
+      questionId: number;
+      input: string;
+      output: string;
+      hidden: boolean;
+    };
   }>(
     "/testcase",
     { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
-        const { questionId, input, output } = request.body;
-
+        const { questionId, input, output, hidden } = request.body;
         if (!questionId || !input || !output) {
           reply
             .status(400)
@@ -30,6 +34,7 @@ export default async function testcaseRoutes(server: FastifyInstance) {
           questionId,
           input,
           output,
+          hidden,
         });
 
         reply.send({ data: testCase });
@@ -73,6 +78,39 @@ export default async function testcaseRoutes(server: FastifyInstance) {
         }
 
         reply.send({ data: testCase });
+      } catch (error) {
+        console.error("Error:", error);
+        reply.status(500).send({ error: "Internal Server Error" });
+      }
+    }
+  );
+
+  server.get(
+    "/testcase/sample",
+    // { onRequest: [server.authenticateAdmin] },
+    async (request, reply) => {
+      try {
+        const testCases = await prisma.testCase.findMany({
+          where: { hidden: false },
+          include: { question: true },
+        });
+        reply.send({ data: testCases });
+      } catch (error) {
+        console.error("Error:", error);
+        reply.status(500).send({ error: "Internal Server Error" });
+      }
+    }
+  );
+  server.get(
+    "/testcase/hidden",
+    // { onRequest: [server.authenticateAdmin] },
+    async (request, reply) => {
+      try {
+        const testCases = await prisma.testCase.findMany({
+          where: { hidden: true },
+          include: { question: true },
+        });
+        reply.send({ data: testCases });
       } catch (error) {
         console.error("Error:", error);
         reply.status(500).send({ error: "Internal Server Error" });

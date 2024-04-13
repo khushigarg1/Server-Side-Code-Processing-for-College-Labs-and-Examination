@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { PrismaClient } from "@prisma/client";
-import { CreateUser, CreateAdmin } from "../schema/authSchema";
+import { CreateUser, CreateAdmin, LoginUser } from "../schema/authSchema";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -31,9 +31,11 @@ export default async function AuthRoutes(server: FastifyInstance) {
   });
 
   //get user details
-  server.post<{ Body: CreateAdmin }>("/user/login", async (req, reply) => {
-    const { email, password } = req.body;
-    const user = await prisma.user.findUnique({ where: { email: email } });
+  server.post<{ Body: LoginUser }>("/user/login", async (req, reply) => {
+    const { email, password, testId } = req.body;
+    const user = await prisma.user.findUnique({
+      where: { email: email, testId: testId },
+    });
     const isMatch = user && (await bcrypt.compare(password, user.password));
     if (!user || !isMatch) {
       return reply.code(401).send({
@@ -45,6 +47,7 @@ export default async function AuthRoutes(server: FastifyInstance) {
       email: user.email,
       password: password,
       role: "user",
+      testid: user?.testId,
     };
     // console.log(payload);
     const token = server.jwt.sign({ payload });

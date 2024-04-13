@@ -39,3 +39,23 @@ export const CreateAdmin = {
     },
   },
 };
+export const LoginUser = {
+  schema: {
+    params: {
+      type: "object",
+      properties: {
+        email: { type: "string" },
+        password: { type: "string" },
+        testId: { type: "number" },
+      },
+    },
+    response: {
+      200: {
+        type: "object",
+        properties: {
+          token: { type: "string" },
+        },
+      },
+    },
+  },
+};
