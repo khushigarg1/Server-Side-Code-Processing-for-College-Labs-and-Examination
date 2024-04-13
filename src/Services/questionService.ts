@@ -51,3 +51,17 @@ export async function updateQuestion(
     throw new Error("Error updating question");
   }
 }
+
+export async function getAllQuestionsByTestId(testId: number) {
+  try {
+    const questions = await prisma.question.findMany({
+      where: {
+        testId: testId,
+      },
+    });
+
+    return questions;
+  } catch (error) {
+    throw new Error("Error retrieving questions by test ID: " + error.message);
+  }
+}

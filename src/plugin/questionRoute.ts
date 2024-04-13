@@ -4,6 +4,7 @@ import {
   createQuestion,
   getQuestionById,
   updateQuestion,
+  getAllQuestionsByTestId,
 } from "../Services/questionService";
 const prisma = new PrismaClient();
 
@@ -90,6 +91,28 @@ export default async function questionRoutes(server: FastifyInstance) {
         });
         reply.send({ data: question });
       } catch (error) {
+        reply.status(500).send({ error: "Internal Server Error" });
+      }
+    }
+  );
+  server.get<{ Params: { testId: string } }>(
+    "/questions/:testId",
+    { onRequest: [server.authenticateAdmin] },
+    async (request, reply) => {
+      try {
+        const testId = parseInt(request.params.testId);
+        const questions = await getAllQuestionsByTestId(testId);
+
+        if (!questions || questions.length === 0) {
+          reply
+            .status(404)
+            .send({ error: "No questions found for the provided test ID" });
+          return;
+        }
+
+        reply.send({ data: questions });
+      } catch (error) {
+        console.error("Error:", error);
         reply.status(500).send({ error: "Internal Server Error" });
       }
     }
