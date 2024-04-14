@@ -30,6 +30,12 @@ export async function getTestById(id) {
         },
       },
       Scoreboard: true,
+      // {
+      //   include: {
+      //     User: true,
+      //     Test: true,
+      //   },
+      // },
     },
   });
   // console.log(test);

@@ -206,6 +206,7 @@ export default async function submissionRoute(server: FastifyInstance) {
       }
     }
   );
+
   server.get<{
     Params: { userid: number; testid: number };
   }>(
@@ -217,12 +218,17 @@ export default async function submissionRoute(server: FastifyInstance) {
 
         const allSubmissions = await prisma.scoreboard.findMany({
           where: { user_id: parseInt(userid), test_id: parseInt(testid) },
-          include: { user: true, test: true },
+          include: { user: true, test: true, SubmissionRun: true },
         });
 
         const latestSubmission = await prisma.scoreboard.findFirst({
           where: { user_id: parseInt(userid), test_id: parseInt(testid) },
           orderBy: { createdAt: "desc" },
+          include: {
+            user: true,
+            test: true,
+            SubmissionRun: true,
+          },
         });
 
         reply.send({ allSubmissions, latestSubmission });
@@ -233,6 +239,74 @@ export default async function submissionRoute(server: FastifyInstance) {
     }
   );
 
+  server.get<{
+    Params: { testid: number };
+  }>(
+    "/submission/:testid",
+    { onRequest: [server.authenticateAdmin] },
+    async (request, reply) => {
+      try {
+        const { testid } = request.params;
+        const distinctUsers = await prisma.scoreboard.findMany({
+          where: { test_id: parseInt(testid) },
+          distinct: ["user_id"],
+          select: {
+            user_id: true,
+          },
+        });
+
+        const latestSubmissions = [];
+
+        for (const user of distinctUsers) {
+          const latestSubmission = await prisma.scoreboard.findFirst({
+            where: { user_id: user.user_id, test_id: parseInt(testid) },
+            orderBy: { createdAt: "desc" },
+            include: { user: true, test: true, SubmissionRun: true },
+          });
+
+          latestSubmissions.push(latestSubmission);
+        }
+
+        const allSubmissions = await prisma.scoreboard.findMany({
+          where: { test_id: parseInt(testid) },
+          include: { user: true, test: true, SubmissionRun: true },
+        });
+
+        reply.send({ allSubmissions, latestSubmissions });
+      } catch (error) {
+        console.error("Error:", error);
+        reply.status(500).send({ error: "Internal Server Error" });
+      }
+    }
+  );
+
+  // server.get<{
+  //   Params: { testid: number };
+  // }>(
+  //   "/submission/:testid",
+  //   { onRequest: [server.authenticateAdmin] },
+  //   async (request, reply) => {
+  //     try {
+  //       const { testid } = request.params;
+
+  //       const allSubmissions = await prisma.scoreboard.findMany({
+  //         where: { test_id: parseInt(testid) },
+  //         include: { user: true, test: true, SubmissionRun: true },
+  //       });
+
+  //       const latestSubmission = await prisma.scoreboard.findFirst({
+  //         where: { test_id: parseInt(testid) },
+  //         orderBy: { createdAt: "desc" },
+  //         include: { user: true, test: true, SubmissionRun: true },
+  //       });
+
+  //       reply.send({ allSubmissions, latestSubmission });
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //       reply.status(500).send({ error: "Internal Server Error" });
+  //     }
+  //   }
+  // );
   server.get<{ Params: { scoreboard_id: number } }>(
     "/submissionrun/:scoreboard_id",
     async (request, reply) => {
