@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { CreateUser, CreateAdmin, LoginUser } from "../schema/authSchema";
 import bcrypt from "bcrypt";
+import { changeAdminPassword } from "../Services/authService";
 
 const prisma = new PrismaClient();
 
@@ -100,6 +101,30 @@ export default async function AuthRoutes(server: FastifyInstance) {
       };
       const token = server.jwt.sign({ payload });
       reply.send({ token });
+    }
+  );
+
+  server.post<{
+    Body: { email: string; currentPassword: string; newPassword: string };
+  }>(
+    "/admin/change-password",
+    { onRequest: [server.authenticateAdmin] },
+    async (req, reply) => {
+      const { email, currentPassword, newPassword } = req.body;
+
+      try {
+        const updatedAdmin = await changeAdminPassword(
+          email,
+          currentPassword,
+          newPassword
+        );
+        reply.send({
+          message: "Password changed successfully",
+          admin: updatedAdmin,
+        });
+      } catch (error) {
+        reply.code(400).send({ message: error.message });
+      }
     }
   );
 }

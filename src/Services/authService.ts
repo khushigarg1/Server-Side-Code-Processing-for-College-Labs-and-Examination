@@ -5,6 +5,28 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 const SALT_ROUNDS = 10;
 
+export async function changeAdminPassword(email, currentPassword, newPassword) {
+  const admin = await prisma.admin.findUnique({ where: { email: email } });
+
+  if (!admin) {
+    throw new Error("Admin not found");
+  }
+
+  const isMatch = await bcrypt.compare(currentPassword, admin.password);
+  if (!isMatch) {
+    throw new Error("Invalid current password");
+  }
+
+  const hash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+  const updatedAdmin = await prisma.admin.update({
+    where: { email: email },
+    data: { password: hash },
+  });
+
+  return updatedAdmin;
+}
+
 export async function createUser(data) {
   const { name, email, password, customValues, testId } = data;
   const hash = await bcrypt.hash(password, SALT_ROUNDS);

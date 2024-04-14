@@ -9,6 +9,7 @@ import submissionRoute from "./plugin/submissionRoute";
 // import multipart from "@fastify/multipart";
 
 import cors from "@fastify/cors";
+import ForgetRoutes from "./plugin/forgetroutes";
 
 const server = fastify({ logger: true });
 const prisma = new PrismaClient();
@@ -18,6 +19,7 @@ aauthMiddleware(server);
 // server.register(multipart);
 server.register(cors, {});
 server.register(AuthRoutes);
+// server.register(ForgetRoutes);
 server.register(testRoutes);
 server.register(questionRoutes);
 server.register(testcaseRoutes);
