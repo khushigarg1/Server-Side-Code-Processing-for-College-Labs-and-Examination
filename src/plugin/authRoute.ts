@@ -11,6 +11,17 @@ export default async function AuthRoutes(server: FastifyInstance) {
   //post request for an user
   server.post<{ Body: CreateUser }>("/user/signup", async (request, reply) => {
     const { name, email, password, customValues, testId } = request.body;
+
+    const testExists = await prisma.test.findUnique({
+      where: { id: testId },
+    });
+
+    if (!testExists) {
+      return reply.code(404).send({
+        message: "Test not found",
+      });
+    }
+
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
     const userdata = await prisma.user.create({
       data: {
@@ -33,6 +44,16 @@ export default async function AuthRoutes(server: FastifyInstance) {
 
   server.post<{ Body: LoginUser }>("/user/login", async (req, reply) => {
     const { email, password, testId } = req.body;
+    const testExists = await prisma.test.findUnique({
+      where: { id: testId },
+    });
+
+    if (!testExists) {
+      return reply.code(404).send({
+        message: "Test not found",
+      });
+    }
+
     const user = await prisma.user.findUnique({
       where: { UniqueEmailTestId: { email, testId } },
     });
