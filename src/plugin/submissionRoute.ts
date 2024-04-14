@@ -78,9 +78,11 @@ export default async function submissionRoute(server: FastifyInstance) {
           const submission = {
             language_id: language_id,
             source_code: source_code,
-            stdin: encodeToBase64(question.input),
+            stdin: question.input,
+            expected_output: question.output,
+            // stdin: encodeToBase64(question.input),
             // expected_output: encodeToBase64("Output: " + question.output),   //for testign with question_id 7
-            expected_output: encodeToBase64(question.output),
+            // expected_output: encodeToBase64(question.output),
           };
           const response = await axios.post(
             "http://localhost:2358/submissions/?base64_encoded=true&wait=true",
@@ -158,8 +160,10 @@ export default async function submissionRoute(server: FastifyInstance) {
           const submission = {
             language_id: language_id,
             source_code: source_code,
-            stdin: encodeToBase64(question.input),
-            expected_output: encodeToBase64(question.output),
+            stdin: question.input,
+            expected_output: question.output,
+            // stdin: encodeToBase64(question.input),
+            // expected_output: encodeToBase64(question.output),
           };
 
           const response = await axios.post(

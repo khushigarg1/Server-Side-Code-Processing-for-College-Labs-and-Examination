@@ -26,6 +26,20 @@ export async function getQuestionById(id: number): Promise<any> {
       where: {
         id,
       },
+      include: {
+        test: {
+          include: {
+            User: true,
+            Question: {
+              include: {
+                TestCase: true,
+                Scoreboard: true,
+              },
+            },
+            Scoreboard: true,
+          },
+        },
+      },
     });
     return question;
   } catch (error) {
