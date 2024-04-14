@@ -32,7 +32,23 @@ export async function getTestById(id) {
       Scoreboard: true,
     },
   });
-  console.log(test);
+  // console.log(test);
+  if (test && test.Question) {
+    test.Question.forEach((question) => {
+      let hiddenCount = 0;
+      let totalcases = 0;
+      if (question.TestCase) {
+        question.TestCase.forEach((testCase) => {
+          if (testCase.hidden) {
+            hiddenCount++;
+          }
+          totalcases++;
+        });
+      }
+      question.hiddenCount = hiddenCount;
+      question.totalcases = totalcases;
+    });
+  }
   return test;
 }
 

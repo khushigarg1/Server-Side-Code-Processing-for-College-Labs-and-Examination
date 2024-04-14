@@ -30,6 +30,15 @@ export default async function testcaseRoutes(server: FastifyInstance) {
           return;
         }
 
+        const question = await prisma.question.findUnique({
+          where: { id: questionId },
+        });
+        if (!question) {
+          reply
+            .status(404)
+            .send({ error: "Question not found with provided question id" });
+          return;
+        }
         const testCase = await createTestCase({
           questionId,
           input,
