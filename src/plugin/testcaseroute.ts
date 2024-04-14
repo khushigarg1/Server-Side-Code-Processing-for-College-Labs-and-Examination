@@ -129,21 +129,26 @@ export default async function testcaseRoutes(server: FastifyInstance) {
 
   server.put<{
     Params: { id: number };
-    Body: { input: string; output: string };
+    Body: { input: string; output: string; hidden: boolean };
   }>(
     "/testcase/:id",
     { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const testCaseId = parseInt(request.params.id);
-        const { input, output } = request.body;
+        const { input, output, hidden } = request.body;
 
         if (!input || !output) {
           reply.status(400).send({ error: "Missing input or output field" });
           return;
         }
 
-        const updatedTestCase = await updateTestCase(testCaseId, input, output);
+        const updatedTestCase = await updateTestCase(
+          testCaseId,
+          input,
+          output,
+          hidden
+        );
 
         reply.send({ data: updatedTestCase });
       } catch (error) {

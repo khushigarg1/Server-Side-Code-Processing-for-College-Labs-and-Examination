@@ -30,11 +30,12 @@ export async function getTestCaseById(id: number): Promise<TestCase | null> {
 export async function updateTestCase(
   id: number,
   input: string,
-  output: string
+  output: string,
+  hidden: boolean
 ): Promise<TestCase | null> {
   const updatedTestCase = await prisma.testCase.update({
     where: { id },
-    data: { input, output },
+    data: { input, output, hidden },
     include: { question: true },
   });
   return updatedTestCase;
