@@ -13,7 +13,7 @@ export default async function submissionRoute(server: FastifyInstance) {
     };
   }>(
     "/submission/custom",
-    { onRequest: [server.authenticateAdmin] },
+    // { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const { source_code, language_id, stdin } = request.body;
@@ -61,7 +61,7 @@ export default async function submissionRoute(server: FastifyInstance) {
     };
   }>(
     "/submission/run",
-    { onRequest: [server.authenticateAdmin] },
+    // { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const { source_code, language_id, qstnid } = request.body;
@@ -122,7 +122,7 @@ export default async function submissionRoute(server: FastifyInstance) {
     };
   }>(
     "/submission/submit",
-    { onRequest: [server.authenticateAdmin] },
+    // { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const { userid, source_code, language_id, qstnid, testId } =
@@ -247,7 +247,7 @@ export default async function submissionRoute(server: FastifyInstance) {
     Params: { testid: number };
   }>(
     "/submission/:testid",
-    { onRequest: [server.authenticateAdmin] },
+    // { onRequest: [server.authenticateAdmin] },
     async (request, reply) => {
       try {
         const { testid } = request.params;
