@@ -1,4 +1,5 @@
 import axios from "axios";
+import { DOCKER_URL } from "../../config";
 
 export async function POST(request) {
   try {
@@ -50,7 +51,7 @@ export async function POST(request) {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: "http://localhost:2358/submissions/?base64_encoded=false&wait=false&cpu_time_limit=10",
+        url: `${DOCKER_URL}submissions/?base64_encoded=false&wait=false&cpu_time_limit=10`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -61,7 +62,7 @@ export async function POST(request) {
       let judgement = await new Promise(function (resolve, reject) {
         setTimeout(async function () {
           const judgement = await axios.get(
-            `http://localhost:2358/submissions/${response.data.token}?base64_encoded=true&fields=stdout,stderr,status_id,language_id,compile_output,status,time,stdin`,
+            `${DOCKER_URL}submissions/${response.data.token}?base64_encoded=true&fields=stdout,stderr,status_id,language_id,compile_output,status,time,stdin`,
             {
               responseType: "arraybuffer",
             }
@@ -78,7 +79,7 @@ export async function POST(request) {
         judgement = await new Promise(function (resolve, reject) {
           setTimeout(async function () {
             const judgement = await axios.get(
-              `http://localhost:2358/submissions/${response.data.token}?base64_encoded=true&fields=stdout,stderr,status_id,language_id,compile_output,status,time,stdin`,
+              `${DOCKER_URL}submissions/${response.data.token}?base64_encoded=true&fields=stdout,stderr,status_id,language_id,compile_output,status,time,stdin`,
               {
                 responseType: "arraybuffer",
               }

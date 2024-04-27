@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { encodeToBase64, decodeFromBase64 } from "../utilss";
+import { DOCKER_URL } from "../../config";
 const axios = require("axios");
 const prisma = new PrismaClient();
 
@@ -27,7 +28,7 @@ export default async function submissionRoute(server: FastifyInstance) {
         let config = {
           method: "post",
           maxBodyLength: Infinity,
-          url: "http://localhost:2358/submissions/?base64_encoded=true&wait=true",
+          url: `${DOCKER_URL}submissions/?base64_encoded=true&wait=true`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -85,7 +86,7 @@ export default async function submissionRoute(server: FastifyInstance) {
             // expected_output: encodeToBase64(question.output),
           };
           const response = await axios.post(
-            "http://localhost:2358/submissions/?base64_encoded=true&wait=true",
+            `${DOCKER_URL}submissions/?base64_encoded=true&wait=true`,
             submission,
             {
               headers: {
@@ -131,7 +132,7 @@ export default async function submissionRoute(server: FastifyInstance) {
         let language_config = {
           method: "get",
           maxBodyLength: Infinity,
-          url: "http://localhost:2358/languages/53",
+          url: `${DOCKER_URL}languages/53`,
           headers: {},
         };
         const languageResponse = await axios.request(language_config);
@@ -167,7 +168,7 @@ export default async function submissionRoute(server: FastifyInstance) {
           };
 
           const response = await axios.post(
-            "http://localhost:2358/submissions/?base64_encoded=true&wait=true",
+            `${DOCKER_URL}?base64_encoded=true&wait=true`,
             submission,
             {
               headers: {
