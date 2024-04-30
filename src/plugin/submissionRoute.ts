@@ -137,13 +137,11 @@ export default async function submissionRoute(server: FastifyInstance) {
         };
         const languageResponse = await axios.request(language_config);
         let language_name = languageResponse?.data?.name;
-        console.log(JSON.stringify(languageResponse.data));
 
         const testcases = await prisma.testCase.findMany({
           where: { question_id: qstnid },
         });
         let total_testcase = testcases.length;
-        console.log(total_testcase, language_name);
         const scoreboard = await prisma.scoreboard.create({
           data: {
             user: { connect: { id: userid } },
@@ -154,7 +152,6 @@ export default async function submissionRoute(server: FastifyInstance) {
             num_testcases_passed: 0,
           },
         });
-
         const submissionRuns = [];
         let passedcount = 0;
         for (const question of testcases) {
@@ -168,7 +165,7 @@ export default async function submissionRoute(server: FastifyInstance) {
           };
 
           const response = await axios.post(
-            `${DOCKER_URL}?base64_encoded=true&wait=true`,
+            `${DOCKER_URL}/submissions/?base64_encoded=true&wait=true`,
             submission,
             {
               headers: {
@@ -206,7 +203,7 @@ export default async function submissionRoute(server: FastifyInstance) {
 
         reply.send({ finalStatus, submissionRuns });
       } catch (error) {
-        console.error("Error:", error);
+        // console.error("Error:", error);
         reply.status(500).send({ error: "Internal Server Error" });
       }
     }
