@@ -87,9 +87,9 @@ server.get("/", function (request, reply) {
 // })
 const start = async () => {
   try {
-    await server.listen({ port: process.env.PORT });
+    await server.listen({ port: process.env.PORT, host: "0.0.0.0" });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     server.log.error(err);
     // process.exit(1)
   }
