@@ -25,8 +25,8 @@ export default async function aauthMiddleware(server: FastifyInstance) {
   server.decorate("authenticateAdmin", async function (req, reply) {
     try {
       await req.jwtVerify();
-      console.log("user....................", req.user);
-      console.log(req.user.tokendata);
+      // console.log("user....................", req.user);
+      // console.log(req.user.tokendata);
       const { role } = req.user.payload;
       if (role !== "admin") {
         throw new Error("Access denied. Not an admin.");

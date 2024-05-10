@@ -39,7 +39,7 @@ export async function POST(request) {
     } else {
       const inputTestcases = req.body.input;
       const expectedOutput = "HELLO";
-      console.log("expectedOutput", expectedOutput);
+      // console.log("expectedOutput", expectedOutput);
       const userCode = req.body.code;
       let data = JSON.stringify({
         source_code: userCode,

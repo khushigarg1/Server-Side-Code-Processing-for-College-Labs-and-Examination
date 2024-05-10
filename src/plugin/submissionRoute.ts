@@ -314,7 +314,7 @@ export default async function submissionRoute(server: FastifyInstance) {
     async (request, reply) => {
       try {
         const { scoreboard_id } = request.params;
-        console.log(scoreboard_id);
+        // console.log(scoreboard_id);
 
         const submissionRuns = await prisma.submissionRun.findMany({
           where: { scoreboard_id: parseInt(scoreboard_id) },

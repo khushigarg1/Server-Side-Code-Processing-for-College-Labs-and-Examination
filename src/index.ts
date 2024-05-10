@@ -89,7 +89,7 @@ const start = async () => {
   try {
     await server.listen({ port: process.env.PORT });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     server.log.error(err);
     // process.exit(1)
   }
